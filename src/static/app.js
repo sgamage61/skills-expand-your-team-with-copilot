@@ -307,7 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getActivityDifficulty(details) {
-    return details.difficulty_level || details.difficulty || "";
+    return details.difficulty_level || "";
   }
 
   // Function to determine activity type (this would ideally come from backend)
