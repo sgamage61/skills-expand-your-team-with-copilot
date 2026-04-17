@@ -498,18 +498,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
-    const activityUrl = window.location.href.split("#")[0];
+    const activitySlug =
+      name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "activity";
+    const activityCardId = `activity-${activitySlug}`;
+    activityCard.id = activityCardId;
+    const activityUrl = `${window.location.origin}${window.location.pathname}#${activityCardId}`;
     const shareText = `Check out the ${name} activity at Mergington High School! ${details.description}`;
+    const encodedShareText = encodeURIComponent(shareText);
+    const encodedActivityUrl = encodeURIComponent(activityUrl);
+    const encodedEmailSubject = encodeURIComponent(
+      `Check out ${name} at Mergington High School`
+    );
+    const encodedEmailBody = encodeURIComponent(`${shareText}\n\n${activityUrl}`);
     const shareLinks = {
-      x: `https://x.com/intent/tweet?text=${encodeURIComponent(
-        shareText
-      )}&url=${encodeURIComponent(activityUrl)}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-        activityUrl
-      )}`,
-      email: `mailto:?subject=${encodeURIComponent(
-        `Check out ${name} at Mergington High School`
-      )}&body=${encodeURIComponent(`${shareText}\n\n${activityUrl}`)}`,
+      x: `https://x.com/intent/tweet?text=${encodedShareText}&url=${encodedActivityUrl}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedActivityUrl}`,
+      email: `mailto:?subject=${encodedEmailSubject}&body=${encodedEmailBody}`,
     };
 
     // Create activity tag
@@ -572,7 +579,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }" target="_blank" rel="noopener noreferrer" aria-label="Share on X">X</a>
         <a class="share-button" href="${
           shareLinks.facebook
-        }" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">f</a>
+        }" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">fb</a>
         <a class="share-button" href="${
           shareLinks.email
         }" aria-label="Share via email">✉</a>
