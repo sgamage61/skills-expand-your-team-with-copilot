@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Authentication state
   let currentUser = null;
+  const SCHOOL_NAME = "Mergington High School";
 
   // Time range mappings for the dropdown
   const timeRanges = {
@@ -499,18 +500,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
     const activitySlug =
-      name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "") || "activity";
+      encodeURIComponent(name).replace(/%/g, "").toLowerCase() || "activity";
     const activityCardId = `activity-${activitySlug}`;
     activityCard.id = activityCardId;
     const activityUrl = `${window.location.origin}${window.location.pathname}#${activityCardId}`;
-    const shareText = `Check out the ${name} activity at Mergington High School! ${details.description}`;
+    const shareText = `Check out the ${name} activity at ${SCHOOL_NAME}! ${details.description}`;
     const encodedShareText = encodeURIComponent(shareText);
     const encodedActivityUrl = encodeURIComponent(activityUrl);
     const encodedEmailSubject = encodeURIComponent(
-      `Check out ${name} at Mergington High School`
+      `Check out ${name} at ${SCHOOL_NAME}`
     );
     const encodedEmailBody = encodeURIComponent(`${shareText}\n\n${activityUrl}`);
     const shareLinks = {
