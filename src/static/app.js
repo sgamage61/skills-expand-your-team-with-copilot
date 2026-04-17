@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Authentication state
   let currentUser = null;
+  const SCHOOL_NAME = "Mergington High School";
 
   // Time range mappings for the dropdown
   const timeRanges = {
@@ -50,6 +51,18 @@ document.addEventListener("DOMContentLoaded", () => {
     afternoon: { start: "15:00", end: "18:00" }, // After school hours
     weekend: { days: ["Saturday", "Sunday"] }, // Weekend days
   };
+
+  function getActivityCardId(activityName) {
+    const normalizedName =
+      activityName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "activity";
+    const nameHash = Array.from(activityName)
+      .reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 7)
+      .toString(36);
+    return `activity-${normalizedName}-${nameHash}`;
+  }
 
   // Initialize filters from active elements
   function initializeFilters() {
@@ -498,6 +511,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
+    const activityCardId = getActivityCardId(name);
+    activityCard.id = activityCardId;
+    const activityUrl = new URL(window.location.href);
+    activityUrl.hash = activityCardId;
+    const safeDescription =
+      typeof details.description === "string" ? details.description.trim() : "";
+    const shareDescription =
+      safeDescription.length > 160
+        ? `${safeDescription.slice(0, 157)}...`
+        : safeDescription;
+    const shareText = shareDescription
+      ? `Check out the ${name} activity at ${SCHOOL_NAME}! ${shareDescription}`
+      : `Check out the ${name} activity at ${SCHOOL_NAME}!`;
+    const encodedShareText = encodeURIComponent(shareText);
+    const encodedActivityUrl = encodeURIComponent(activityUrl.toString());
+    const encodedEmailSubject = encodeURIComponent(
+      `Check out ${name} at ${SCHOOL_NAME}`
+    );
+    const encodedEmailBody = encodeURIComponent(
+      `${shareText}\n\n${activityUrl.toString()}`
+    );
+    const shareLinks = {
+      x: `https://x.com/intent/tweet?text=${encodedShareText}&url=${encodedActivityUrl}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedActivityUrl}`,
+      email: `mailto:?subject=${encodedEmailSubject}&body=${encodedEmailBody}`,
+    };
 
     // Create activity tag
     const tagHtml = `
@@ -551,6 +590,18 @@ document.addEventListener("DOMContentLoaded", () => {
             )
             .join("")}
         </ul>
+      </div>
+      <div class="share-actions">
+        <span class="share-label">Share:</span>
+        <a class="share-button" href="${
+          shareLinks.x
+        }" target="_blank" rel="noopener noreferrer" aria-label="Share on X">X</a>
+        <a class="share-button" href="${
+          shareLinks.facebook
+        }" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">FB</a>
+        <a class="share-button" href="${
+          shareLinks.email
+        }" aria-label="Share via email">✉</a>
       </div>
       <div class="activity-card-actions">
         ${
