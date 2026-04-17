@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return details.schedule;
   }
 
-  function getDifficultyLevel(details) {
+  function getActivityDifficulty(details) {
     return details.difficulty_level || details.difficulty || "";
   }
 
@@ -432,8 +432,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Apply difficulty filter
-      const difficultyLevel = getDifficultyLevel(details).toLowerCase();
+      const difficultyLevel = getActivityDifficulty(details).toLowerCase();
       if (currentDifficulty === "all") {
+        // "All" difficulty means activities without explicit difficulty (all levels)
         if (difficultyLevel) {
           return;
         }
@@ -514,7 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
-    const difficultyLevel = getDifficultyLevel(details);
+    const difficultyLevel = getActivityDifficulty(details);
 
     // Create activity tag
     const tagHtml = `
