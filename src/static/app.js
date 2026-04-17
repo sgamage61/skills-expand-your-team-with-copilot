@@ -501,12 +501,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const activityUrl = window.location.href.split("#")[0];
     const shareText = `Check out the ${name} activity at Mergington High School! ${details.description}`;
     const shareLinks = {
-      x: `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      x: `https://x.com/intent/tweet?text=${encodeURIComponent(
         shareText
       )}&url=${encodeURIComponent(activityUrl)}`,
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
         activityUrl
-      )}&quote=${encodeURIComponent(shareText)}`,
+      )}`,
       email: `mailto:?subject=${encodeURIComponent(
         `Check out ${name} at Mergington High School`
       )}&body=${encodeURIComponent(`${shareText}\n\n${activityUrl}`)}`,
