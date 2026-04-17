@@ -52,6 +52,18 @@ document.addEventListener("DOMContentLoaded", () => {
     weekend: { days: ["Saturday", "Sunday"] }, // Weekend days
   };
 
+  function getActivityCardId(activityName) {
+    const normalizedName =
+      activityName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "activity";
+    const nameHash = Array.from(activityName)
+      .reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 7)
+      .toString(36);
+    return `activity-${normalizedName}-${nameHash}`;
+  }
+
   // Initialize filters from active elements
   function initializeFilters() {
     // Initialize day filter
@@ -499,18 +511,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
-    const activitySlug =
-      encodeURIComponent(name).replace(/%/g, "").toLowerCase() || "activity";
-    const activityCardId = `activity-${activitySlug}`;
+    const activityCardId = getActivityCardId(name);
     activityCard.id = activityCardId;
-    const activityUrl = `${window.location.origin}${window.location.pathname}#${activityCardId}`;
-    const shareText = `Check out the ${name} activity at ${SCHOOL_NAME}! ${details.description}`;
+    const activityUrl = new URL(window.location.href);
+    activityUrl.hash = activityCardId;
+    const safeDescription =
+      typeof details.description === "string" ? details.description.trim() : "";
+    const shareDescription =
+      safeDescription.length > 160
+        ? `${safeDescription.slice(0, 157)}...`
+        : safeDescription;
+    const shareText = shareDescription
+      ? `Check out the ${name} activity at ${SCHOOL_NAME}! ${shareDescription}`
+      : `Check out the ${name} activity at ${SCHOOL_NAME}!`;
     const encodedShareText = encodeURIComponent(shareText);
-    const encodedActivityUrl = encodeURIComponent(activityUrl);
+    const encodedActivityUrl = encodeURIComponent(activityUrl.toString());
     const encodedEmailSubject = encodeURIComponent(
       `Check out ${name} at ${SCHOOL_NAME}`
     );
-    const encodedEmailBody = encodeURIComponent(`${shareText}\n\n${activityUrl}`);
+    const encodedEmailBody = encodeURIComponent(
+      `${shareText}\n\n${activityUrl.toString()}`
+    );
     const shareLinks = {
       x: `https://x.com/intent/tweet?text=${encodedShareText}&url=${encodedActivityUrl}`,
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedActivityUrl}`,
