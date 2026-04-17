@@ -579,7 +579,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }" target="_blank" rel="noopener noreferrer" aria-label="Share on X">X</a>
         <a class="share-button" href="${
           shareLinks.facebook
-        }" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">fb</a>
+        }" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">FB</a>
         <a class="share-button" href="${
           shareLinks.email
         }" aria-label="Share via email">✉</a>
