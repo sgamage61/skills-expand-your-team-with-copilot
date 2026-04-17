@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // State for activities and filters
   let allActivities = {};
   let currentFilter = "all";
-  let currentDifficulty = "all";
+  let currentDifficulty = "unspecified";
   let searchQuery = "";
   let currentDay = "";
   let currentTimeRange = "";
@@ -306,6 +306,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return details.schedule;
   }
 
+  /**
+   * Get the activity difficulty level, or an empty string when unspecified.
+   * @param {Object} details
+   * @returns {string}
+   */
   function getActivityDifficultyLevel(details) {
     return details.difficulty_level || "";
   }
@@ -433,7 +438,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Apply difficulty filter
       const difficultyLevel = getActivityDifficultyLevel(details).toLowerCase();
-      if (currentDifficulty === "all") {
+      if (currentDifficulty === "unspecified") {
         // "All" difficulty means activities without explicit difficulty (all levels)
         if (difficultyLevel) {
           return;
